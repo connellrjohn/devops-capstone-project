@@ -124,3 +124,24 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+
+    def test_list_accounts(self):
+        """ It should return a list of accounts when there are accounts."""
+        # Should return empty list if no accounts are created
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.get_json(), [])
+
+        # Should return list of accounts that are created
+        for account in AccountFactory.create_batch(5):
+            response = self.client.post(
+                BASE_URL,
+                json=account.serialize(),
+                content_type="application/json"
+            )
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.get_json()), 5)
+

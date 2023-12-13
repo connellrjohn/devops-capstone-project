@@ -29,7 +29,7 @@ def index():
         jsonify(
             name="Account REST API Service",
             version="1.0",
-            # paths=url_for("list_accounts", _external=True),
+            paths=url_for("list_accounts", _external=True),
         ),
         status.HTTP_200_OK,
     )
@@ -62,7 +62,15 @@ def create_accounts():
 ######################################################################
 
 # ... place you code here to LIST accounts ...
-
+@app.route("/accounts", methods=["GET"])
+def list_accounts():
+    """
+    List All Accounts
+    This endpoint will list all Accounts and return an empty list if none are created
+    """
+    app.logger.info("Request to list all Accounts")
+    account_list = [account.serialize() for account in Account.all()]
+    return (jsonify(account_list), status.HTTP_200_OK)
 
 ######################################################################
 # READ AN ACCOUNT
