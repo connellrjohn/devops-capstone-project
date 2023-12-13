@@ -102,7 +102,18 @@ def read_accounts(account_id):
 ######################################################################
 
 # ... place you code here to DELETE an account ...
-
+@app.route("/accounts/<account_id>", methods=["DELETE"])
+def delete_account(account_id):
+    """
+    Deletes an Account
+    Deletes requested account with valid account_id
+    """
+    app.logger.info(f"Request to delete Account with id {account_id}")
+    found_account = Account.find(account_id)
+    if found_account:
+        found_account.delete()
+    
+    return make_response('', status.HTTP_204_NO_CONTENT)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
