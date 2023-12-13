@@ -236,3 +236,10 @@ class TestAccountService(TestCase):
         }
         for key, value in expected_headers.items():
             self.assertEqual(returned_headers.get(key), value)
+
+    def test_cors_security(self):
+        """It should return CORS header"""
+        response = self.client.get("/", environ_overrides=HTTPS_ENVIRON)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        returned_headers = response.headers
+        self.assertEqual(returned_headers.get("Access-Control-Allow-Origin"), "*")
