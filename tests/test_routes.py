@@ -126,7 +126,7 @@ class TestAccountService(TestCase):
     # ADD YOUR TEST CASES HERE ...
 
     def test_list_accounts(self):
-        """ It should return a list of accounts when there are accounts."""
+        """ It should return a list of accounts."""
         # Should return empty list if no accounts are created
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -145,3 +145,30 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), 5)
 
+    def test_read_account(self):
+        """It should Read an existing account"""
+        # create an Account to read
+        account = AccountFactory()
+        response = self.client.post(
+            BASE_URL,
+            json=account.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # read the account back to the user
+        account_data = response.get_json()
+        account_id = account_data["id"]
+        response = self.client.get(f"{BASE_URL}/{account_id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        read_account = response.get_json()
+        self.assertEqual(account_data["id"], read_account["id"])
+        self.assertEqual(account_data["name"], read_account["name"])
+        self.assertEqual(account_data["email"], read_account["email"])
+        self.assertEqual(account_data["address"], read_account["address"])
+        self.assertEqual(account_data["phone_number"], read_account["phone_number"])
+        self.assertEqual(account_data["date_joined"], read_account["date_joined"])
+    
+    def test_read_account_not_found(self):
+        """It should Return error on bad Account ID"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
