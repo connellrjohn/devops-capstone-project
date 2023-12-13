@@ -8,8 +8,8 @@ on:
       - 'main'
 jobs:
   build:
-    runs-on: ubuntu:latest
-    container: python3.9-slim
+    runs-on: ubuntu-latest
+    container: python:3.9-slim
     services:
       postgres:
         image: postgres:alpine
