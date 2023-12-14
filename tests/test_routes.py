@@ -22,6 +22,7 @@ BASE_URL = "/accounts"
 
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
 
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
@@ -212,14 +213,14 @@ class TestAccountService(TestCase):
 
         # Update known value
         account_data["name"] = "Newbie Dev"
-        response = self.client.put(f"{BASE_URL}/{account_id}", json = account_data)
+        response = self.client.put(f"{BASE_URL}/{account_id}", json=account_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_account = response.get_json()
         self.assertEqual(updated_account["name"], "Newbie Dev")
 
     def test_update_bad_account(self):
         """It should not update a bad account"""
-        response = self.client.put(f"{BASE_URL}/0", json = {})
+        response = self.client.put(f"{BASE_URL}/0", json={})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_security_headers(self):
